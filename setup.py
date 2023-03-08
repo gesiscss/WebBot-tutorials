@@ -5,6 +5,7 @@ setup(
     description='Basic parsing capabilities for search engine results scraped with WebBot',
     name='webbotparser',
     version='0.1.0',
+    license='MIT',
     packages=['webbotparser'],
     install_requires=[
          'pandas>=1.5.3',

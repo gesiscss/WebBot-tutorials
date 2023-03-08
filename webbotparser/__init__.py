@@ -1,1 +1,1 @@
-from .webbotparser import WebBotParser
+from .webbotparser import WebBotParser, GoogleParser, DuckDuckGoParser

@@ -3,13 +3,17 @@ import pandas as pd
 import regex as re
 import warnings
 import pathlib
+from datetime import datetime
 
 class WebBotParser:
 
     def __init__(self, engine = None, queries = [], result_selector = '', metadata_extractor = lambda soup, file: {}):
         """To use the WebBotParser, either specify one of the supported engines,\
  or specify your own list of queries and/or a metadata extractor function.\
-\nThe currently supported engines and result types are are: 'Google Text', 'Google News', 'Google Video', 'DuckDuckGo Text', and 'DuckDuckGo News'."""
+\nThe currently supported engines and result types are are: 'Google Text',\
+ 'Google News', 'Google Video', 'DuckDuckGo Text', 'DuckDuckGo News',\
+ 'Baidu Text', and 'Baidu News'."""
+        
         if engine is None and len(queries) == 0 and len(metadata_extractor(None, None)) == 0:
             raise Exception(self.__init__.__doc__)
         if engine is not None:
@@ -33,6 +37,14 @@ class WebBotParser:
                 self.result_selector = DuckDuckGoParser.duckduckgo_news_result_selector
                 self.queries = DuckDuckGoParser.duckduckgo_news_queries
                 self.metadata_extractor = DuckDuckGoParser.duckduckgo_metadata
+            elif engine == 'Baidu Text':
+                self.result_selector = BaiduParser.baidu_text_result_selector
+                self.queries = BaiduParser.baidu_text_queries
+                self.metadata_extractor = BaiduParser.baidu_metadata
+            elif engine == 'Baidu News':
+                self.result_selector = BaiduParser.baidu_news_result_selector
+                self.queries = BaiduParser.baidu_news_queries
+                self.metadata_extractor = BaiduParser.baidu_metadata
             else:
                 raise Exception('Engine not supported')
         elif result_selector == '':
@@ -126,8 +138,8 @@ class WebBotParser:
             if (query['type'] == 'exists'):
                 return len(_res) > 0
             
-            elif (len(_res) == 0): warnings.warn('CSS selector for ' + query['name'] + ' didn\'t match.', UserWarning, stacklevel=2)
-            elif (len(_res) > 1): warnings.warn('CSS selector for ' + query['name'] + ' returned multiple matches.', UserWarning, stacklevel=2)
+            elif (len(_res) == 0): warnings.warn("CSS selector for '" + query['name'] + "' didn't match.", UserWarning, stacklevel=2)
+            elif (len(_res) > 1): warnings.warn("CSS selector for '" + query['name'] + "' returned multiple matches.", UserWarning, stacklevel=2)
 
             elif (query['type'] == 'text'):
                 return _res[0].get_text()
@@ -227,3 +239,60 @@ class DuckDuckGoParser:
         _query = file.split('_')[1]
         _date = pd.to_datetime(file[-24:-5], format="%Y-%m-%d_%H_%M_%S")
         return {'result type': _result_type, 'engine': _engine, 'query': _query, 'date': _date}
+
+
+class BaiduParser:
+
+    @staticmethod
+    def get_date(_soup):
+        dates = _soup.select('span.c-color-gray2')
+        try: # some results don't have a date
+            date = dates[0].get_text().split(': ')[-1][:-1] # some dates have additional information
+            date = pd.to_datetime(date, format="%Y年%m月%d日")
+        except: date = None
+        return date
+
+    baidu_text_queries = [
+            {'name': 'title', 'type': 'text', 'selector': 'h3'},
+            {'name': 'link', 'type': 'attribute', 'selector': 'h3 > a', 'attribute': 'href'},
+            {'name': 'text', 'type': 'text', 'selector': 'span.content-right_8Zs40, div.c-span9 p:nth-child(2)'},
+            {'name': 'source', 'type': 'text', 'selector': 'div.source_1Vdff > a, span.c-showurl'},
+            {'name': 'has_image', 'type': 'exists', 'selector': '.c-img3'},
+            {'name': 'published', 'type': 'custom', 'function': get_date}
+        ]
+
+    baidu_text_result_selector = 'div.result'
+
+    @staticmethod
+    def get_news_date(_soup):
+        dates = _soup.select('span.c-color-gray2')
+        try: # try an absolute date
+            date = pd.to_datetime(dates[0].get_text(), format="%Y年%m月%d日")
+        except:
+            date = None
+            try: # try a relative date
+                date = str(datetime.now().year) + '年' + dates[0].get_text()
+                date = pd.to_datetime(date, format="%Y年%m月%d日")
+            except: date = None
+        return date
+    
+    baidu_news_queries = [
+        {'name': 'title', 'type': 'text', 'selector': 'h3'},
+        {'name': 'link', 'type': 'attribute', 'selector': 'h3 > a', 'attribute': 'href'},
+        {'name': 'text', 'type': 'text', 'selector': 'div.content-wrapper_1SuJ0 > div > span:nth-child(2), div.content_BL3zl > span:nth-child(2)'},
+        {'name': 'source', 'type': 'text', 'selector': 'div.news-source_Xj4Dv'},
+        {'name': 'has_image', 'type': 'exists', 'selector': '.c-img3'},
+        {'name': 'published', 'type': 'custom', 'function': get_news_date}
+    ]
+
+    baidu_news_result_selector = 'div.c-container'
+
+    @staticmethod
+    def baidu_metadata(soup, file):
+        file = pathlib.Path(file).name
+        _result_type = file.split('_')[-5]
+        _engine = file.split('_')[0].split('/')[-1]
+        _query = file.split('_')[1]
+        _page = int(soup.select('div#page strong')[0].get_text())
+        _date = pd.to_datetime(file[-24:-5], format="%Y-%m-%d_%H_%M_%S")
+        return {'result type': _result_type, 'engine': _engine, 'query': _query, 'page': _page, 'date': _date}

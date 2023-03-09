@@ -8,6 +8,8 @@ The following engines and search result types are currently supported out of the
 - Google Video
 - DuckDuckGo Text
 - DuckDuckGo News
+- Baidu Text
+- Baidu News
 
 For examplary usage, see `example.ipynb`.
 

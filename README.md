@@ -19,7 +19,7 @@ For basic usage, simply clone this repository, or directly download `webbotparse
 
 ### Install the package with pip
 
-If you want to use the WebBotParser over multiple projects/directories, you can also install it as a python package. Clone this repository, navigate to the folder, and run
+If you want to use the WebBotParser over multiple projects/directories, you can also install it as a Python package. Clone this repository, navigate to the folder, and run
 ```
 pip install -e .
 ```
@@ -35,11 +35,19 @@ and initialize the WebBotParser for the search engine and result type your are i
 ```
 parser = WebBotParser(engine = 'DuckDuckGo News')
 ```
-Then, you can obtain the search results as a pandas DataFrame and metadata as a python dictionary with
+Then, you can obtain the search results as a pandas DataFrame and metadata as a Python dictionary with
 ```
 metadata, results = parser.get_results(file='path/to/the/result_page.html')
 ```
 Furthermore, `parser.get_metadata(file)` can be used to only extract the metadata. `parser.get_results_from_dir(dir)` allows to directly extract search results spread over multiple pages, as Google text result are provided for instance. For examples also see `example.ipynb`.
+
+## Extracting images
+
+WebBot archives images inline in the html file of the search results, i.e., they are neither external files on your drive nor fetched from the original source on viewing the downloaded search results page. This allows us to extract the images directly from the html file for further analysis. The engines and result types supported out of the box with WebBotParser allow for extracting images as well. Simply initialize `WebBotParser` as follows:
+```
+parser = WebBotParser(engine = 'Google Video', extract_images=True)
+```
+You can optionally specify `extract_images_prefix`, `extract_images_format`, and `extract_images_to_dir`. See `example.ipynb` for more details, including preview in Jupyter Notebooks.
 
 ## Custom result types
 
@@ -65,9 +73,12 @@ queries = [
     
     # whether or not a CSS selector matches, returns a Boolean
     {'name': 'ghi', 'type': 'exists', 'selector': 'ul'},
+
+    # extract inline images and name them by a title
+    {'name': 'jkl', 'type': 'image', 'selector': 'g-img > img', 'title_selector': 'h3'}
     
     # pass a custom query function
-    {'name': 'jkl', 'type': 'custom', 'function': my_function},
+    {'name': 'mno', 'type': 'custom', 'function': my_function},
 ]
 ```
 

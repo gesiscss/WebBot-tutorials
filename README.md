@@ -3,13 +3,13 @@
 This repository adds basic parsing capabilities for search engine results scraped with [WebBot](https://github.com/gesiscss/WebBot). With this package, you can parse search result pages saved from Google, DuckDuckGo, etc. using WebBot's [download capabilities](https://github.com/gesiscss/WebBot#-saving-search-results), or obtained through a different method for further analysis.
 
 The following engines and search result types are currently supported out of the box:
-- Google Text
-- Google News
-- Google Video
-- DuckDuckGo Text
-- DuckDuckGo News
-- Baidu Text
-- Baidu News
+
+|                | Text | News | Images | Videos |
+|----------------|------|------|--------|--------|
+| **Google**     | ✓    | ✓    | ✓      | ✓      |
+| **DuckDuckGo** | ✓    | ✓    | ✓      | ✓      |
+| **Yahoo**      | ✓    | ✓    | ✓
+| **Baidu**      | ✓    | ✓
 
 For examplary usage, see `example.ipynb`.
 

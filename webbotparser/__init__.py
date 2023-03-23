@@ -1,1 +1,1 @@
-from .webbotparser import WebBotParser, GoogleParser, DuckDuckGoParser, BaiduParser
+from .webbotparser import WebBotParser, GoogleParser, DuckDuckGoParser, BaiduParser, YahooParser

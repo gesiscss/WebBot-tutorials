@@ -11,11 +11,11 @@ The following engines and search result types are currently supported out of the
 | **Yahoo**      | ✓    | ✓    | ✓
 | **Baidu**      | ✓    | ✓
 
-For examplary usage, see `example.ipynb`.
+For examplary usage, see [example.ipynb](./example.ipynb).
 
 ## Installation
 
-For basic usage, simply clone this repository, or directly download `webbotparser/webbotparser.py` and add this script to your working directory.
+For basic usage, simply clone this repository, or directly download [webbotparser/webbotparser.py](./webbotparser/webbotparser.py) and add the script to your working directory.
 
 ### Install the package with pip
 
@@ -39,7 +39,7 @@ Then, you can obtain the search results as a pandas DataFrame and metadata as a 
 ```
 metadata, results = parser.get_results(file='path/to/the/result_page.html')
 ```
-Furthermore, `parser.get_metadata(file)` can be used to only extract the metadata. `parser.get_results_from_dir(dir)` allows to directly extract search results spread over multiple pages, as Google text result are provided for instance. For examples also see `example.ipynb`.
+Furthermore, `parser.get_metadata(file)` can be used to only extract the metadata. `parser.get_results_from_dir(dir)` allows to directly extract search results spread over multiple pages, as Google text result are provided for instance. For examples also see [example.ipynb](./example.ipynb).
 
 ## Extracting images
 
@@ -87,3 +87,7 @@ You can optionally provide a `metadata_extractor(soup, file)` function to extrac
 from webbotparser import GoogleParser
 metadata_extractor = GoogleParser.google_metadata
 ```
+
+## Alternatives
+
+[WebSearcher](https://github.com/gitronald/WebSearcher) is a Python package that facilitates obtaining and parsing search results from Google text search. Compared to `webbotparser`, it supports parsing more diverse results (ads, knowledge boxes, etc.), but only Google text results (for now). [websearcher.ipynb](./websearcher.ipynb) illustrates how to utilize WebSearcher's parsing capabilities on search result pages obtained using WebBot.

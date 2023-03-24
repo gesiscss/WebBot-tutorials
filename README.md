@@ -19,9 +19,9 @@ For basic usage, simply clone this repository, or directly download `webbotparse
 
 ### Install the package with pip
 
-If you want to use the WebBotParser over multiple projects/directories, you can also install it as a Python package. Clone this repository, navigate to the folder, and run
+If you want to use the WebBotParser over multiple projects/directories, you can also install it as a Python package. Simply run
 ```
-pip install -e .
+pip install git+https://github.com/gesiscss/WebBot-tutorials
 ```
 The `webbotparser` package is then available globally in your respective Python installation.
 

@@ -3,5 +3,4 @@ __pycache__
 .vscode
 .DS_Store
 *.egg-info
-testdata
 extracted_images

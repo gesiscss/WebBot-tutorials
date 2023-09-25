@@ -1,5 +1,7 @@
 # WebBot tutorials
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gesiscss/WebBot-tutorials/HEAD)
+
 This repository contains tutorials for parsing search engine results scraped with [WebBot](https://github.com/gesiscss/WebBot).
 
 ## Parsing with Python
